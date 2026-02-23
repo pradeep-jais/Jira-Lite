@@ -1,8 +1,18 @@
 import "./App.css";
-import Home from "./pages/home/Home";
+import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Home from "./pages/Home";
+import Login from "./pages/Login/Login";
 
 function App() {
-  return <Home />;
+  return (
+    <div className="bg-background">
+      {/* <Navbar />
+      <Home /> */}
+      {/* <Dashboard /> */}
+      <Login />
+    </div>
+  );
 }
 
 export default App;

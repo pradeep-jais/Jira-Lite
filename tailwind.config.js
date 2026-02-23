@@ -12,6 +12,8 @@ export default {
         textPrimary: "rgb(var(--color-text-primary) / <alpha-value>)",
         textSecondary: "rgb(var(--color-text-secondary) / <alpha-value>)",
 
+        white: "rgb(var(--color-white) / <alpha-value>)",
+
         border: "rgb(var(--color-border) / <alpha-value>)",
 
         success: "rgb(var(--color-success) / <alpha-value>)",
