@@ -3,20 +3,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#0D9488",
-        primaryHover: "#0F766E",
+        primary: "rgb(var(--color-primary) / <alpha-value>)",
+        primaryHover: "rgb(var(--color-primary-hover) / <alpha-value>)",
 
-        background: "#F8FAFC",
-        surface: "#FFFFFF",
+        background: "rgb(var(--color-background) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
 
-        textPrimary: "#0F172A",
-        textSecondary: "#64748B",
+        textPrimary: "rgb(var(--color-text-primary) / <alpha-value>)",
+        textSecondary: "rgb(var(--color-text-secondary) / <alpha-value>)",
 
-        border: "#E2E8F0",
+        border: "rgb(var(--color-border) / <alpha-value>)",
 
-        success: "#22C55E",
-        danger: "#EF4444",
-        warning: "#F97316",
+        success: "rgb(var(--color-success) / <alpha-value>)",
+        danger: "rgb(var(--color-danger) / <alpha-value>)",
+        warning: "rgb(var(--color-warning) / <alpha-value>)",
       },
     },
   },
