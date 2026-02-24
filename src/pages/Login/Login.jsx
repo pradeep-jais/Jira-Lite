@@ -1,4 +1,9 @@
+import { useAuthContext } from "../../context/AuthContext";
+
 const Login = () => {
+  const authState = useAuthContext();
+  console.log(authState);
+
   return (
     <main className="min-h-screen flex justify-center items-center">
       <article className="bg-surface p-8 rounded-2xl shadow-lg text-center">
