@@ -1,5 +1,9 @@
-import { createContext, useContext, useReducer } from "react";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createContext, useContext, useEffect, useReducer } from "react";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { auth } from "../lib/firebase";
 
 const AuthContext = createContext();
@@ -13,6 +17,24 @@ const initialAuthState = {
 };
 
 const authReducer = (state, action) => {
+  if (action.type === "SET_LOADING") {
+    return {
+      ...state,
+      loading: action.payload,
+    };
+  }
+  if (action.type === "SET_ERROR") {
+    return {
+      ...state,
+      error: action.payload.error,
+    };
+  }
+  if (action.type === "SET_USER") {
+    return {
+      ...state,
+      user: action.payload.user,
+    };
+  }
   return state;
 };
 
@@ -20,10 +42,12 @@ const googleProvider = new GoogleAuthProvider();
 
 const signInWithGoogle = async () => {
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    console.log(result.user);
+    dispatch({ type: "SET_LOADING", payload: true });
+    await signInWithPopup(auth, googleProvider);
   } catch (error) {
-    console.log(error);
+    dispatch({ type: "SET_ERROR", payload: { error: error.message } });
+  } finally {
+    dispatch({ type: "SET_LOADING", payload: false });
   }
 };
 
@@ -38,6 +62,33 @@ const logOut = async () => {
 
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
+
+  useEffect(() => {
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, photoURL } = user;
+
+        dispatch({
+          type: "SET_USER",
+          payload: {
+            user: {
+              uid,
+              name: user.displayName,
+              email,
+              photoURL,
+            },
+          },
+        });
+      } else {
+        dispatch({ type: "SET_USER", payload: { user: null } });
+      }
+      dispatch({ type: "SET_LOADING", payload: false });
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <AuthContext.Provider
