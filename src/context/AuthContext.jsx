@@ -42,6 +42,7 @@ const googleProvider = new GoogleAuthProvider();
 
 const signInWithGoogle = async () => {
   try {
+    dispatch({ type: "SET_ERROR", payload: { error: null } });
     dispatch({ type: "SET_LOADING", payload: true });
     await signInWithPopup(auth, googleProvider);
   } catch (error) {
