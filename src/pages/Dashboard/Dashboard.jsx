@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import Home from "../Home";
 import { useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import Modal from "../../components/Modal";
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -18,6 +19,7 @@ const Dashboard = () => {
     const newProjects = [...projects, project];
     setProjects(newProjects);
     setProject("");
+    setIsAddProjectModalOpen(false);
   };
 
   const handleCreateProject = () => {
@@ -30,53 +32,54 @@ const Dashboard = () => {
       <div className="flex-auto">
         <Navbar />
         <main>
-          <section className="pt-10">
-            <div className="flex justify-center">
-              <h2 className="w-full text-textPrimary font-medium text-3xl">
-                Welcome,{" "}
-                {user ? (
-                  user.name.split(" ")[0]
-                ) : (
-                  <span className="loader"></span>
-                )}
-              </h2>
-            </div>
-            <div className="h-20">
-              <div className="loader"></div>
-            </div>
+          <section className="flex flex-col gap-12 items-center pt-12">
+            <h2 className="text-center text-textPrimary font-medium text-3xl">
+              Welcome,{" "}
+              {user ? (
+                <strong>{user.name.split(" ")[0]}</strong>
+              ) : (
+                <span className="loader"></span>
+              )}
+            </h2>
 
-            <div className="p-4 text-center mt-4">
-              <button
-                className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer"
-                onClick={handleCreateProject}
-              >
-                create project
-              </button>
-            </div>
-            <form
-              onSubmit={(e) => handleAddProject(e)}
-              className={`w-[95%] mx-auto bg-surface min-h-40 flex flex-col gap-4 p-4 mt-4 max-w-xl rounded-sm shadow-md ${IsAddProjectModalOpen ? "block" : "hidden"}`}
+            <button
+              className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer"
+              onClick={handleCreateProject}
             >
-              <h3 className="capitalize text-lg">Create a project</h3>
-              <div className="flex flex-col gap-1">
-                <input
-                  type="text"
-                  id="project"
-                  value={project}
-                  onChange={(e) => setProject(e.target.value)}
-                  className="border border-border p-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                  placeholder="Enter project name"
-                />
-              </div>
-              <div className="text-end mt-4">
-                <button
-                  className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer"
-                  type="submit"
+              create project
+            </button>
+
+            {IsAddProjectModalOpen && (
+              <Modal>
+                <form
+                  onSubmit={(e) => handleAddProject(e)}
+                  className={`w-full bg-surface flex flex-col gap-4 p-8 max-w-lg rounded-sm shadow-md`}
                 >
-                  Add project
-                </button>
-              </div>
-            </form>
+                  <h3 className="capitalize text-lg font-bold">
+                    Create project
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="projectName">Project name</label>
+                    <input
+                      type="text"
+                      id="projectName"
+                      value={project}
+                      onChange={(e) => setProject(e.target.value)}
+                      className="border border-border px-2 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="Eg; project management app"
+                    />
+                  </div>
+                  <div className="text-end mt-4">
+                    <button
+                      className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer"
+                      type="submit"
+                    >
+                      Add project
+                    </button>
+                  </div>
+                </form>
+              </Modal>
+            )}
           </section>
         </main>
       </div>
