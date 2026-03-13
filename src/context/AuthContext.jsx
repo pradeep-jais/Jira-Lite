@@ -5,6 +5,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
+import { createUserIfNotExists } from "../services/userService";
 
 const AuthContext = createContext();
 
@@ -69,19 +70,24 @@ const AuthProvider = ({ children }) => {
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const { uid, email, photoURL } = user;
+        const { uid, email, photoURL, metadata } = user;
+        const userData = {
+          uid,
+          name: user.displayName,
+          email,
+          photoURL,
+          createAt: metadata.creationTime,
+          lastLoginAt: metadata.lastSignInTime,
+          role: "admin",
+        };
 
         dispatch({
           type: "SET_USER",
           payload: {
-            user: {
-              uid,
-              name: user.displayName,
-              email,
-              photoURL,
-            },
+            user: userData,
           },
         });
+        createUserIfNotExists(userData); // save new user to firestore
       } else {
         dispatch({ type: "SET_USER", payload: { user: null } });
       }
