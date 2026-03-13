@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import Modal from "../../components/Modal";
 
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [project, setProject] = useState("");
@@ -12,7 +15,7 @@ const Dashboard = () => {
 
   const { user } = useAuthContext();
 
-  const handleAddProject = (e) => {
+  const handleAddProject = async (e) => {
     e.preventDefault();
     if (!project.trim()) return;
 
@@ -20,6 +23,18 @@ const Dashboard = () => {
     setProjects(newProjects);
     setProject("");
     setIsAddProjectModalOpen(false);
+
+    // Write new projects to Firestore
+    try {
+      const projectsRef = collection(db, "projects");
+      const res = await addDoc(projectsRef, {
+        name: project,
+        createdAt: new Date(),
+      });
+      console.log("project added to firestore successfully!", res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCreateProject = () => {
