@@ -50,11 +50,17 @@ const Dashboard = () => {
             </button>
 
             {IsAddProjectModalOpen && (
-              <Modal>
+              <Modal onClose={() => setIsAddProjectModalOpen(false)}>
                 <form
                   onSubmit={(e) => handleAddProject(e)}
-                  className={`w-full bg-surface flex flex-col gap-4 p-8 max-w-lg rounded-sm shadow-md`}
+                  className={`w-full bg-surface flex flex-col gap-4 p-8 max-w-lg rounded-sm shadow-md relative`}
                 >
+                  <button
+                    className="absolute top-4 right-5 text-red-500 text-2xl font-bold cursor-pointer"
+                    onClick={() => setIsAddProjectModalOpen(false)}
+                  >
+                    X
+                  </button>
                   <h3 className="capitalize text-lg font-bold">
                     Create project
                   </h3>
