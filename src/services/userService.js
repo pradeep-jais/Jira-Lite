@@ -7,7 +7,7 @@ export const createUserIfNotExists = async (user) => {
 
   const userSnap = await getDoc(userDocRef);
 
-  if (userSnap.exists()) {
+  if (!userSnap.exists()) {
     await setDoc(userDocRef, {
       ...user,
     });

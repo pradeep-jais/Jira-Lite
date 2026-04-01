@@ -78,7 +78,7 @@ const AuthProvider = ({ children }) => {
           photoURL,
           createAt: metadata.creationTime,
           lastLoginAt: metadata.lastSignInTime,
-          role: "admin",
+          role: "user",
         };
 
         dispatch({
