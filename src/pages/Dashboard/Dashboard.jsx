@@ -28,7 +28,7 @@ const Dashboard = () => {
     // Write new projects to Firestore
     try {
       setIsLoading(true);
-      const projectsRef = collection(db, "projects");
+      const projectsRef = collection(db, `users/${user.uid}/projects`);
       const res = await addDoc(projectsRef, {
         name: project,
         createdAt: new Date(),
