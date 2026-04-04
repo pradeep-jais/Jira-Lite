@@ -11,7 +11,9 @@ import { db } from "../../lib/firebase";
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [project, setProject] = useState("");
-  const [IsAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
+  const [IsModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const { user } = useAuthContext();
 
@@ -22,10 +24,10 @@ const Dashboard = () => {
     const newProjects = [...projects, project];
     setProjects(newProjects);
     setProject("");
-    setIsAddProjectModalOpen(false);
 
     // Write new projects to Firestore
     try {
+      setIsLoading(true);
       const projectsRef = collection(db, "projects");
       const res = await addDoc(projectsRef, {
         name: project,
@@ -33,12 +35,13 @@ const Dashboard = () => {
       });
       console.log("project added to firestore successfully!", res);
     } catch (error) {
+      setError(error);
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-  };
 
-  const handleCreateProject = () => {
-    setIsAddProjectModalOpen(true);
+    setIsModalOpen(false);
   };
 
   return (
@@ -59,20 +62,21 @@ const Dashboard = () => {
 
             <button
               className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer"
-              onClick={handleCreateProject}
+              onClick={() => setIsModalOpen(true)}
             >
               create project
             </button>
 
-            {IsAddProjectModalOpen && (
-              <Modal onClose={() => setIsAddProjectModalOpen(false)}>
+            {IsModalOpen && (
+              <Modal onClose={() => setIsModalOpen(false)}>
                 <form
                   onSubmit={(e) => handleAddProject(e)}
                   className={`w-full bg-surface flex flex-col gap-4 p-8 max-w-lg rounded-sm shadow-md relative`}
                 >
                   <button
                     className="absolute top-4 right-5 text-red-500 text-2xl font-bold cursor-pointer"
-                    onClick={() => setIsAddProjectModalOpen(false)}
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
                   >
                     X
                   </button>
@@ -90,12 +94,22 @@ const Dashboard = () => {
                       placeholder="Eg; project management app"
                     />
                   </div>
-                  <div className="text-end mt-4">
+                  <div className="flex justify-end mt-4">
                     <button
-                      className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer"
+                      className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2"
                       type="submit"
                     >
-                      Add project
+                      {isLoading && (
+                        <span
+                          className="loader-1"
+                          style={{
+                            width: "20px",
+                            padding: "4px",
+                            background: "#fff",
+                          }}
+                        ></span>
+                      )}
+                      {!isLoading ? "Create project" : `${"Creating project"}`}
                     </button>
                   </div>
                 </form>
