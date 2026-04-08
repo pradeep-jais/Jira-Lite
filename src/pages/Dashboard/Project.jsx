@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddTask from "./AddTask";
 
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useParams } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
@@ -12,6 +12,28 @@ const Project = () => {
 
   const { user } = useAuthContext();
   const { id: projectId } = useParams();
+
+  useEffect(() => {
+    if (user) getTasks();
+  }, [user]);
+
+  const getTasks = async () => {
+    try {
+      const tasksRef = collection(
+        db,
+        `users/${user.uid}/projects/${projectId}/tasks`,
+      );
+      const tasksSnapshot = await getDocs(tasksRef);
+
+      const tasksList = tasksSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTasks(tasksList);
+    } catch (error) {
+      console.error("Error fetching tasks: ", error);
+    }
+  };
 
   const postTask = async (task) => {
     try {
@@ -47,8 +69,8 @@ const Project = () => {
         </div>
         {isModalOpen && (
           <AddTask
-            setTasks={setTasks}
             postTask={postTask}
+            getTasks={getTasks}
             setIsModalOpen={setIsModalOpen}
           />
         )}
