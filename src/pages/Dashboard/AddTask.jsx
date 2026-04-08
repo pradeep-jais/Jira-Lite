@@ -2,7 +2,7 @@ import Modal from "../../components/Modal";
 
 import { useState } from "react";
 
-const AddTask = ({ setIsModalOpen }) => {
+const AddTask = ({ setTasks, postTask, setIsModalOpen }) => {
   const [task, setTask] = useState({
     name: "",
     deadline: "",
@@ -15,7 +15,8 @@ const AddTask = ({ setIsModalOpen }) => {
   };
   const handleTaskSubmit = (e) => {
     e.preventDefault();
-    console.log("Task submitted:", task);
+    setTasks((prev) => [...prev, task]);
+    postTask({ createdAt: new Date(), ...task });
 
     setTask({
       name: "",

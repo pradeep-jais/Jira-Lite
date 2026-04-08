@@ -1,9 +1,30 @@
 import { useState } from "react";
 import AddTask from "./AddTask";
-import Modal from "../../components/Modal";
+
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import { useParams } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Project = () => {
+  const [tasks, setTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { user } = useAuthContext();
+  const { id: projectId } = useParams();
+
+  const postTask = async (task) => {
+    try {
+      const tasksRef = collection(
+        db,
+        `users/${user.uid}/projects/${projectId}/tasks`,
+      );
+      const docRef = await addDoc(tasksRef, task);
+      console.log("Task added with ID: ", docRef.id);
+    } catch (error) {
+      console.error("Error adding task: ", error);
+    }
+  };
 
   return (
     <section className="max-w-7xl mx-auto p-2">
@@ -24,42 +45,49 @@ const Project = () => {
             Add Task
           </button>
         </div>
-        {isModalOpen && <AddTask setIsModalOpen={setIsModalOpen} />}
-        <table className="w-full mb-2">
-          <thead className="bg-background font-bold">
-            <tr>
-              <td>Your Task</td>
-              <td>Deadline</td>
-              <td>Status</td>
-              <td>Actions</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Create folder structure</td>
-              <td>2023-10-31</td>
-              <td>In progress</td>
-              <td>
-                <button className="mr-2 cursor-pointer">📝</button>
-                <button className="cursor-pointer">❌</button>
-              </td>
-            </tr>
-          </tbody>
-          <tbody className="bg-background">
-            <tr>
-              <td>Initialize firebase</td>
-              <td>2023-10-31</td>
-              <td>Pending</td>
-              <td>
-                <button className="mr-2 cursor-pointer">📝</button>
-                <button className="cursor-pointer">❌</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <button className="bg-primary hover:bg-primaryHover text-white text-sm  py-1 px-3 rounded-md cursor-pointer">
-          Clear Tasks
-        </button>
+        {isModalOpen && (
+          <AddTask
+            setTasks={setTasks}
+            postTask={postTask}
+            setIsModalOpen={setIsModalOpen}
+          />
+        )}
+        {tasks.length === 0 ? (
+          <p>No tasks available.</p>
+        ) : (
+          <table className="w-full mb-2">
+            <thead className="bg-background font-bold">
+              <tr>
+                <td>Name</td>
+                <td>Deadline</td>
+                <td>Status</td>
+                <td>Actions</td>
+              </tr>
+            </thead>
+            {tasks.map((task, i) => {
+              const { name, deadline, status } = task;
+              return (
+                <tbody key={i}>
+                  <tr>
+                    <td>{name}</td>
+                    <td>{deadline}</td>
+                    <td>{status}</td>
+                    <td>
+                      <button className="mr-2 cursor-pointer">📝</button>
+                      <button className="cursor-pointer">❌</button>
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
+          </table>
+        )}
+
+        {tasks.length > 0 && (
+          <button className="bg-primary hover:bg-primaryHover text-white text-sm  py-1 px-3 rounded-md cursor-pointer">
+            Clear Tasks
+          </button>
+        )}
       </div>
     </section>
   );
