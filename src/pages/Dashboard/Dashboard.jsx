@@ -1,34 +1,59 @@
 import Navbar from "../../components/Navbar";
 import Sidebar from "./Sidebar";
 import Home from "../Home";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import Modal from "../../components/Modal";
 
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [project, setProject] = useState("");
-  const [IsModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddingProject, setIsAddingProject] = useState(false);
+  const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [error, setError] = useState(null);
 
   const { user } = useAuthContext();
 
+  useEffect(() => {
+    if (user) {
+      getProjects();
+    }
+  }, [user]);
+
+  const getProjects = async () => {
+    if (!user?.uid) return;
+
+    try {
+      setIsFetchingProjects(true);
+      const projectsRef = collection(db, `users/${user?.uid}/projects`);
+      const projectsSnap = await getDocs(projectsRef);
+      console.log(projectsSnap);
+      const projectsData = projectsSnap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log(projectsData);
+
+      setProjects(projectsData);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsFetchingProjects(false);
+    }
+  };
+
   const handleAddProject = async (e) => {
     e.preventDefault();
-    if (!project.trim()) return;
-
-    const newProjects = [...projects, project];
-    setProjects(newProjects);
-    setProject("");
+    if (!user?.uid || !project.trim()) return;
 
     // Write new projects to Firestore
     try {
-      setIsLoading(true);
-      const projectsRef = collection(db, `users/${user.uid}/projects`);
+      setIsAddingProject(true);
+      const projectsRef = collection(db, `users/${user?.uid}/projects`);
       const res = await addDoc(projectsRef, {
         name: project,
         createdAt: new Date(),
@@ -38,15 +63,16 @@ const Dashboard = () => {
       setError(error);
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setIsAddingProject(false);
     }
 
     setIsModalOpen(false);
+    getProjects();
   };
 
   return (
     <div className="flex gap-2">
-      <Sidebar projects={projects} />
+      <Sidebar projects={projects} isFetchingProjects={isFetchingProjects} />
       <div className="flex-auto">
         <Navbar />
         <main>
@@ -67,7 +93,7 @@ const Dashboard = () => {
               create project
             </button>
 
-            {IsModalOpen && (
+            {isModalOpen && (
               <Modal onClose={() => setIsModalOpen(false)}>
                 <form
                   onSubmit={(e) => handleAddProject(e)}
@@ -99,7 +125,7 @@ const Dashboard = () => {
                       className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2"
                       type="submit"
                     >
-                      {isLoading && (
+                      {isAddingProject && (
                         <span
                           className="loader-1"
                           style={{
@@ -109,7 +135,9 @@ const Dashboard = () => {
                           }}
                         ></span>
                       )}
-                      {!isLoading ? "Create project" : `${"Creating project"}`}
+                      {!isAddingProject
+                        ? "Create project"
+                        : `${"Creating project"}`}
                     </button>
                   </div>
                 </form>
