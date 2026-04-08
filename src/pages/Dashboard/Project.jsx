@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import AddTask from "./AddTask";
 
-import { collection, addDoc, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useParams } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
@@ -48,6 +54,21 @@ const Project = () => {
     }
   };
 
+  const removeTask = async (taskId) => {
+    try {
+      const taskRef = doc(
+        db,
+        `users/${user.uid}/projects/${projectId}/tasks`,
+        taskId,
+      );
+      await deleteDoc(taskRef);
+      getTasks();
+      console.log("Task deleted with ID: ", taskId);
+    } catch (error) {
+      console.error("Error deleting task: ", error);
+    }
+  };
+
   return (
     <section className="max-w-7xl mx-auto p-2">
       <p className="mb-2 bg-surface p-2 rounded-sm shadow-3xl">
@@ -87,7 +108,7 @@ const Project = () => {
               </tr>
             </thead>
             {tasks.map((task, i) => {
-              const { name, deadline, status } = task;
+              const { id, name, deadline, status } = task;
               return (
                 <tbody key={i}>
                   <tr>
@@ -96,7 +117,12 @@ const Project = () => {
                     <td>{status}</td>
                     <td>
                       <button className="mr-2 cursor-pointer">📝</button>
-                      <button className="cursor-pointer">❌</button>
+                      <button
+                        className="cursor-pointer"
+                        onClick={() => removeTask(id)}
+                      >
+                        ❌
+                      </button>
                     </td>
                   </tr>
                 </tbody>
