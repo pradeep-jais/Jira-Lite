@@ -1,13 +1,37 @@
 import Modal from "../../components/Modal";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const AddTask = ({ getTasks, postTask, setIsModalOpen }) => {
+const AddTask = ({
+  tasks,
+  action,
+  getTasks,
+  postTask,
+  updateTask,
+  setIsModalOpen,
+}) => {
   const [task, setTask] = useState({
     name: "",
     deadline: "",
     status: "pending",
   });
+
+  useEffect(() => {
+    if (action.name === "edit") {
+      const taskToEdit = tasks.find((task) => task.id === action.id);
+      if (taskToEdit) {
+        setTask(taskToEdit);
+      }
+    }
+    if (action.name === "add") {
+      setTask({
+        name: "",
+        deadline: "",
+        status: "pending",
+      });
+    }
+  }, []);
+
   const handleTaskInput = (e) => {
     setTask((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
@@ -15,7 +39,13 @@ const AddTask = ({ getTasks, postTask, setIsModalOpen }) => {
   };
   const handleTaskSubmit = (e) => {
     e.preventDefault();
-    postTask({ createdAt: new Date(), ...task });
+    if (action.name === "edit") {
+      updateTask(action.id, task);
+    }
+    if (action.name === "add") {
+      postTask({ createdAt: new Date(), ...task });
+    }
+
     getTasks();
 
     setTask({

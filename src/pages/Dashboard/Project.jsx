@@ -7,6 +7,7 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useParams } from "react-router-dom";
@@ -15,6 +16,7 @@ import { useAuthContext } from "../../context/AuthContext";
 const Project = () => {
   const [tasks, setTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [action, setAction] = useState({ name: "", id: "" });
 
   const { user } = useAuthContext();
   const { id: projectId } = useParams();
@@ -54,6 +56,20 @@ const Project = () => {
     }
   };
 
+  const updateTask = async (taskId, updatedTask) => {
+    try {
+      const taskRef = doc(
+        db,
+        `users/${user.uid}/projects/${projectId}/tasks`,
+        taskId,
+      );
+      await updateDoc(taskRef, updatedTask);
+      console.log("Task updated successfully!", updatedTask);
+    } catch (error) {
+      console.log("Error while updating task:", error);
+    }
+  };
+
   const removeTask = async (taskId) => {
     try {
       const taskRef = doc(
@@ -83,15 +99,21 @@ const Project = () => {
           <h3 className="text-lg font-semibold">Tasks</h3>
           <button
             className="bg-primary hover:bg-primaryHover text-white text-sm  py-1 px-3 rounded-md cursor-pointer"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsModalOpen(true);
+              setAction({ name: "add", id: "" });
+            }}
           >
             Add Task
           </button>
         </div>
         {isModalOpen && (
           <AddTask
+            tasks={tasks}
+            action={action}
             postTask={postTask}
             getTasks={getTasks}
+            updateTask={updateTask}
             setIsModalOpen={setIsModalOpen}
           />
         )}
@@ -116,7 +138,15 @@ const Project = () => {
                     <td>{deadline}</td>
                     <td>{status}</td>
                     <td>
-                      <button className="mr-2 cursor-pointer">📝</button>
+                      <button
+                        className="mr-2 cursor-pointer"
+                        onClick={() => {
+                          setIsModalOpen(true);
+                          setAction({ name: "edit", id });
+                        }}
+                      >
+                        📝
+                      </button>
                       <button
                         className="cursor-pointer"
                         onClick={() => removeTask(id)}
