@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 const Sidebar = ({ projects, isFetchingProjects }) => {
   return (
     <aside className="w-60 h-screen bg-surface border-r border-border p-4 pr-0 relative">
@@ -12,7 +14,7 @@ const Sidebar = ({ projects, isFetchingProjects }) => {
               key={id}
               className="capitalize cursor-pointer hover:text-white hover:bg-primary px-1 py-1 rounded-sm transition duration-100 text-nowrap overflow-hidden text-ellipsis"
             >
-              {name}
+              <NavLink to={`/dashboard/projects/${id}`}>{name}</NavLink>
             </li>
           );
         })}
