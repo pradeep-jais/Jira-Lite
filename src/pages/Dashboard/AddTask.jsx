@@ -1,4 +1,5 @@
 import Modal from "../../components/Modal";
+import { ClosedCaption, CrossIcon, X } from "lucide-react";
 
 import { useEffect, useState } from "react";
 
@@ -56,47 +57,77 @@ const AddTask = ({
     setIsModalOpen(false);
   };
   return (
-    <Modal>
+    <Modal
+      onClose={() => {
+        setIsModalOpen(false);
+      }}
+    >
       <form
         onSubmit={handleTaskSubmit}
-        className={`w-full bg-surface flex flex-col gap-4 p-8 max-w-lg rounded-sm shadow-md relative`}
+        className={`bg-background w-full p-6 max-w-lg rounded-sm shadow-md relative`}
       >
-        <button
-          className="absolute top-4 right-5 text-red-500 text-2xl font-bold cursor-pointer"
-          type="button"
-          onClick={() => setIsModalOpen(false)}
-        >
-          X
-        </button>
-        <h3 className="capitalize text-lg font-bold">Add New Tasks</h3>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="taskName">Task name</label>
+        <div className="flex justify-between mb-4">
+          <div>
+            <h3 className="capitalize text-xl font-bold">
+              {action.name === "edit" ? "Edit Task" : "Add New Task"}
+            </h3>
+            <p className="text-textSecondary text-sm">
+              Create tasks inside your project
+            </p>
+          </div>
+          <button
+            className="text-textSecondary hover:text-warning transition text-2xl font-bold cursor-pointer"
+            type="button"
+            onClick={() => setIsModalOpen(false)}
+          >
+            <X size={32} strokeWidth="3.5" />
+          </button>
+        </div>
+
+        <div className="flex flex-col mb-5 gap-1">
+          <label
+            htmlFor="taskName"
+            className="text-sm text-textSecondary font-medium tracking-wide capitalize"
+          >
+            Task name
+          </label>
           <input
             type="text"
             id="taskName"
             name="name"
             value={task.name}
             onChange={handleTaskInput}
-            className="border border-border px-2 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="bg-surface border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="New task"
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="taskDeadline">Deadline</label>
+        <div className="flex flex-col mb-5 gap-1">
+          <label
+            htmlFor="taskDeadline"
+            className="text-sm text-textSecondary font-medium tracking-wide"
+          >
+            Due Date
+          </label>
           <input
             type="date"
             id="taskDeadline"
             name="deadline"
             value={task.deadline}
             onChange={handleTaskInput}
-            className="border border-border px-2 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="bg-surface border border-gray-300 px-3 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase placeholder:text-textSecondary"
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="taskStatus">Status</label>
+        <div className="flex flex-col mb-5 gap-1">
+          <label
+            htmlFor="taskStatus"
+            className="text-sm text-textSecondary font-medium tracking-wide capitalize"
+          >
+            Status
+          </label>
           <select
             name="status"
             id="taskStatus"
+            className="bg-surface border border-gray-300 px-3 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary capitalize placeholder:text-textSecondary"
             value={task.status}
             onChange={handleTaskInput}
           >
@@ -105,12 +136,19 @@ const AddTask = ({
             <option value="completed">completed</option>
           </select>
         </div>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end gap-4">
           <button
-            className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2"
+            className="bg-surface hover:bg-gray-50 transform duration-300 text-textPrimary text-sm py-1.5 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2 tracking-wider shadow-md font-semibold"
+            type="button"
+            onClick={() => setIsModalOpen(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1.5 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2 tracking-wider shadow-md font-semibold"
             type="submit"
           >
-            Submit
+            Save task
           </button>
         </div>
       </form>
