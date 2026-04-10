@@ -3,18 +3,22 @@ import { NavLink } from "react-router-dom";
 const Sidebar = ({ projects, isFetchingProjects }) => {
   return (
     <aside className="w-60 h-screen bg-surface border-r border-border p-4 pr-0 relative">
-      <h3 className="uppercase text-textPrimary border-b border-border font-medium tracking-wide pb-1">
+      <h3 className="uppercase text-textPrimary border-b border-border font-medium tracking-wide">
         Projects
       </h3>
-      <ul className="mt-2 gap-1 text-sm text-textPrimary h-[calc(100vh-100px)] overflow-y-scroll">
+      <ul className="gap-1 text-sm text-textPrimary h-[calc(100vh-100px)] overflow-y-auto py-2 pr-2">
         {projects.map((project) => {
           const { id, name } = project;
           return (
-            <li
-              key={id}
-              className="capitalize cursor-pointer hover:text-white hover:bg-primary px-1 py-1 rounded-sm transition duration-100 text-nowrap overflow-hidden text-ellipsis"
-            >
-              <NavLink to={`/dashboard/projects/${id}`}>{name}</NavLink>
+            <li key={id}>
+              <NavLink
+                to={`/dashboard/projects/${id}`}
+                className={({ isActive }) =>
+                  `block w-full capitalize border-none  cursor-pointer hover:text-white hover:bg-primary px-1.5 py-1 mb-0.5 rounded-sm transition duration-100 text-nowrap overflow-hidden text-ellipsis ${isActive ? "text-white bg-primary" : ""}`
+                }
+              >
+                {name}
+              </NavLink>
             </li>
           );
         })}
