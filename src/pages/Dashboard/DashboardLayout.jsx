@@ -10,6 +10,7 @@ import { db } from "../../lib/firebase";
 const DashboardLayout = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -39,8 +40,13 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className=" flex  gap-2">
-      <Sidebar projects={projects} isFetchingProjects={isFetchingProjects} />
-      <div className="flex-auto">
+      <Sidebar
+        projects={projects}
+        isFetchingProjects={isFetchingProjects}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
+      <div className="flex-auto min-w-0">
         <Navbar />
         <main>
           <Outlet context={{ getProjects }} />
