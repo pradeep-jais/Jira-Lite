@@ -52,7 +52,7 @@ const DashboardLayout = ({ children }) => {
           setIsSidebarOpen={setIsSidebarOpen}
         />
         <main>
-          <Outlet context={{ getProjects }} />
+          <Outlet context={{ projects, isFetchingProjects, getProjects }} />
         </main>
       </div>
     </div>

@@ -17,7 +17,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase";
-import { useParams } from "react-router-dom";
+import { useParams, useOutletContext } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
 const Project = () => {
@@ -27,10 +27,11 @@ const Project = () => {
 
   const { user } = useAuthContext();
   const { id: projectId } = useParams();
+  const { projects, isFetchingProjects } = useOutletContext();
 
   useEffect(() => {
-    if (user) getTasks();
-  }, [user]);
+    if (user && projectId) getTasks();
+  }, [user, projectId]);
 
   const getTasks = async () => {
     try {
@@ -104,13 +105,23 @@ const Project = () => {
     return colorClass;
   };
 
+  if (isFetchingProjects)
+    return (
+      <div className="h-[calc(100vh-100px)] flex justify-center items-center">
+        <div className="loader-2"></div>
+      </div>
+    );
+
+  const projectDetails = projects.find((project) => project.id === projectId);
+  console.log(projects, projectDetails);
+
   return (
     <section className="max-w-5xl mx-auto p-2">
       <div className="mb-2 bg-surface p-2 rounded-md shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-xl font-medium text-textPrimary">
-              Build a portfolio app
+              {projectDetails?.name}
             </h2>
             <div className="flex gap-2 text-textSecondary px-1">
               <span>{tasks.length} Task</span>

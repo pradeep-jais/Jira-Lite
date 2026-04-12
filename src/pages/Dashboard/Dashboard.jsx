@@ -56,7 +56,7 @@ const Dashboard = () => {
         {user ? (
           <strong>{user.name.split(" ")[0]}</strong>
         ) : (
-          <span className="loader"></span>
+          <span className="loader-2"></span>
         )}
       </h2>
 
