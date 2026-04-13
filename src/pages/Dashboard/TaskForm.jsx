@@ -4,23 +4,22 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Button from "../../components/ui/Button";
 
-const TaskForm = ({
-  tasks,
-  action,
-  getTasks,
-  postTask,
-  updateTask,
-  setIsModalOpen,
-}) => {
+import { useAuthContext } from "../../context/AuthContext";
+import { useParams } from "react-router-dom";
+import { createTask, updateTask } from "../../services/taskService";
+
+const TaskForm = ({ tasks, action, getTasks, setIsModalOpen }) => {
   const [task, setTask] = useState({
     name: "",
     deadline: "",
     status: "pending",
   });
+  const { user } = useAuthContext();
+  const { id: projectId } = useParams();
 
   useEffect(() => {
     if (action.name === "edit") {
-      const taskToEdit = tasks.find((task) => task.id === action.id);
+      const taskToEdit = tasks.find((task) => task.id === action.taskId);
       if (taskToEdit) {
         setTask(taskToEdit);
       }
@@ -42,13 +41,13 @@ const TaskForm = ({
   const handleTaskSubmit = (e) => {
     e.preventDefault();
     if (action.name === "edit") {
-      updateTask(action.id, task);
+      saveEditedTask(user.uid, projectId, action.taskId, task);
     }
     if (action.name === "add") {
-      postTask({ createdAt: new Date(), ...task });
+      postTask(user.uid, projectId, task);
     }
 
-    getTasks();
+    getTasks(user.uid, projectId);
 
     setTask({
       name: "",
@@ -57,6 +56,24 @@ const TaskForm = ({
     });
     setIsModalOpen(false);
   };
+
+  const postTask = async (uid, projectId, task) => {
+    try {
+      await createTask(uid, projectId, task);
+    } catch (error) {
+      console.error("Error adding task: ", error);
+    }
+  };
+
+  const saveEditedTask = async (uid, projectId, taskId, editedTask) => {
+    try {
+      await updateTask(uid, projectId, taskId, editedTask);
+      console.log("Task updated successfully!", editedTask);
+    } catch (error) {
+      console.log("Error while updating task:", error);
+    }
+  };
+
   return (
     <Modal
       onClose={() => {

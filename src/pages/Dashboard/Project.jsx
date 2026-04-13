@@ -9,89 +9,42 @@ import {
   CircleDashed,
 } from "lucide-react";
 
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { deleteTask, fetchTasks } from "../../services/taskService";
+
 import { useParams, useOutletContext } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
 const Project = () => {
   const [tasks, setTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [action, setAction] = useState({ name: "", id: "" });
+  const [action, setAction] = useState({ name: "", taskId: "" });
 
   const { user } = useAuthContext();
   const { id: projectId } = useParams();
   const { projects, isFetchingProjects } = useOutletContext();
 
   useEffect(() => {
-    if (user && projectId) getTasks();
+    if (user && projectId) getTasks(user.uid, projectId);
   }, [user, projectId]);
 
-  const getTasks = async () => {
+  const getTasks = async (uid, projectId) => {
     try {
-      const tasksRef = collection(
-        db,
-        `users/${user.uid}/projects/${projectId}/tasks`,
-      );
-      const tasksSnapshot = await getDocs(tasksRef);
-
-      const tasksList = tasksSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const tasksList = await fetchTasks(uid, projectId);
       setTasks(tasksList);
     } catch (error) {
       console.error("Error fetching tasks: ", error);
     }
   };
 
-  const postTask = async (task) => {
+  const removeTask = async (uid, projectId, taskId) => {
     try {
-      const tasksRef = collection(
-        db,
-        `users/${user.uid}/projects/${projectId}/tasks`,
-      );
-      const docRef = await addDoc(tasksRef, task);
-      console.log("Task added with ID: ", docRef.id);
-    } catch (error) {
-      console.error("Error adding task: ", error);
-    }
-  };
-
-  const updateTask = async (taskId, updatedTask) => {
-    try {
-      const taskRef = doc(
-        db,
-        `users/${user.uid}/projects/${projectId}/tasks`,
-        taskId,
-      );
-      await updateDoc(taskRef, updatedTask);
-      console.log("Task updated successfully!", updatedTask);
-    } catch (error) {
-      console.log("Error while updating task:", error);
-    }
-  };
-
-  const removeTask = async (taskId) => {
-    try {
-      const taskRef = doc(
-        db,
-        `users/${user.uid}/projects/${projectId}/tasks`,
-        taskId,
-      );
-      await deleteDoc(taskRef);
-      getTasks();
+      await deleteTask(uid, projectId, taskId);
       console.log("Task deleted with ID: ", taskId);
     } catch (error) {
       console.error("Error deleting task: ", error);
     }
+
+    getTasks(user.uid, projectId);
   };
 
   const pendingTasksCount = tasks.filter(
@@ -152,9 +105,7 @@ const Project = () => {
           <TaskForm
             tasks={tasks}
             action={action}
-            postTask={postTask}
             getTasks={getTasks}
-            updateTask={updateTask}
             setIsModalOpen={setIsModalOpen}
           />
         )}
@@ -187,10 +138,10 @@ const Project = () => {
                   </td>
                 </tr>
                 {tasks.map((task) => {
-                  const { id, name, deadline, status } = task;
+                  const { id: taskId, name, deadline, status } = task;
                   return (
                     <tr
-                      key={id}
+                      key={taskId}
                       className="text-textPrimary nth-of-type-[even]:bg-background"
                     >
                       <td className="p-2 flex items-center gap-2">
@@ -209,14 +160,16 @@ const Project = () => {
                           className="mr-2 cursor-pointer hover:text-primary"
                           onClick={() => {
                             setIsModalOpen(true);
-                            setAction({ name: "edit", id });
+                            setAction({ name: "edit", taskId });
                           }}
                         >
                           <SquarePen size={20} />
                         </button>
                         <button
                           className="cursor-pointer hover:text-primary transition"
-                          onClick={() => removeTask(id)}
+                          onClick={() =>
+                            removeTask(user.uid, projectId, taskId)
+                          }
                         >
                           <Trash2 size={20} />
                         </button>
