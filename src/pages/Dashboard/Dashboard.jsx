@@ -5,6 +5,7 @@ import Modal from "../../components/Modal";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import Button from "../../components/ui/Button";
 
 const Dashboard = () => {
   const [project, setProject] = useState("");
@@ -59,13 +60,7 @@ const Dashboard = () => {
           <span className="loader-2"></span>
         )}
       </h2>
-
-      <button
-        className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer"
-        onClick={() => setIsModalOpen(true)}
-      >
-        create project
-      </button>
+      <Button onClick={() => setIsModalOpen(true)}>Create project</Button>
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>

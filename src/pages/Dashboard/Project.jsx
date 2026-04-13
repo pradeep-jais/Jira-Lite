@@ -1,3 +1,4 @@
+import Button from "../../components/ui/Button";
 import { useEffect, useState } from "react";
 import AddTask from "./AddTask";
 import {
@@ -129,15 +130,14 @@ const Project = () => {
               <span>{pendingTasksCount} Pending</span>
             </div>
           </div>
-          <button
-            className="bg-primary hover:bg-primaryHover text-white text-sm  py-1 px-3 rounded-md cursor-pointer"
+          <Button
             onClick={() => {
               setIsModalOpen(true);
               setAction({ name: "add", id: "" });
             }}
           >
-            Add Task
-          </button>
+            add task
+          </Button>
         </div>
       </div>
 
@@ -175,15 +175,16 @@ const Project = () => {
               <tbody>
                 <tr>
                   <td className="p-2">
-                    <button
-                      className="bg-gray-100 text-sm py-1 px-3 rounded-lg text-primary font-bold hover:bg-gray-200 transition cursor-pointer flex items-center gap-1"
+                    <Button
+                      variant={"hipster"}
+                      size={"md"}
                       onClick={() => {
                         setIsModalOpen(true);
                         setAction({ name: "add", id: "" });
                       }}
                     >
                       <Plus size={20} /> Add Task
-                    </button>
+                    </Button>
                   </td>
                 </tr>
                 {tasks.map((task, i) => {

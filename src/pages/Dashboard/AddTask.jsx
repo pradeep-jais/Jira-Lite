@@ -2,6 +2,7 @@ import Modal from "../../components/Modal";
 import { ClosedCaption, CrossIcon, X } from "lucide-react";
 
 import { useEffect, useState } from "react";
+import Button from "../../components/ui/Button";
 
 const AddTask = ({
   tasks,
@@ -137,19 +138,14 @@ const AddTask = ({
           </select>
         </div>
         <div className="flex justify-end gap-4">
-          <button
-            className="bg-surface hover:bg-gray-50 transform duration-300 text-textPrimary text-sm py-1.5 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2 tracking-wider shadow-md font-semibold"
+          <Button
             type="button"
+            variant={"hipster"}
             onClick={() => setIsModalOpen(false)}
           >
-            Cancel
-          </button>
-          <button
-            className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1.5 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2 tracking-wider shadow-md font-semibold"
-            type="submit"
-          >
-            Save task
-          </button>
+            cancel
+          </Button>
+          <Button type="submit">Save task</Button>
         </div>
       </form>
     </Modal>

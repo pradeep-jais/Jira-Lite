@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
 
-const Button = ({ to, children, onClick, className, size }) => {
+const Button = ({ to, children, onClick, className, size, variant }) => {
   const baseStyles =
-    "inline-block capitalize cursor-pointer transition-colors duration-300 ease-in-out";
+    "inline-flex items-center gap-1 capitalize cursor-pointer transition-colors duration-300 ease-in-out tracking-wider shadow-md font-semibold";
 
-  const themeStyles = "bg-primary text-white hover:bg-primaryHover";
+  const themeStyles = {
+    primary: "bg-primary text-white hover:bg-primaryHover",
+    hipster: "bg-gray-100 text-primary font-bold hover:bg-gray-200",
+  };
 
   const sizeStyles = {
     sm: "px-2.5 py-1 text-xs rounded-md",
@@ -13,7 +16,7 @@ const Button = ({ to, children, onClick, className, size }) => {
     xl: "px-7 py-2.5 text-lg rounded-2xl",
   };
 
-  const mergedStyles = `${baseStyles} ${themeStyles} ${size ? sizeStyles[size] : sizeStyles.md}  ${className || ""}`;
+  const mergedStyles = `${baseStyles} ${variant ? themeStyles[variant] : themeStyles.primary} ${size ? sizeStyles[size] : sizeStyles.md}  ${className || ""}`;
 
   if (to) {
     return (
