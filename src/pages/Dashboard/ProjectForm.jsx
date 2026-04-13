@@ -5,8 +5,7 @@ import Modal from "../../components/Modal";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { addProject } from "../../services/projectsService";
 
 const ProjectForm = ({ setIsModalOpen }) => {
   const [project, setProject] = useState("");
@@ -22,19 +21,10 @@ const ProjectForm = ({ setIsModalOpen }) => {
     if (!user?.uid || !project.trim()) return;
 
     // Write new projects to Firestore
-    let newProjectId = null;
+    let newProject = { name: project, createdAt: new Date() };
     try {
       setIsAddingProject(true);
-      const projectsRef = collection(db, `users/${user?.uid}/projects`);
-      const res = await addDoc(projectsRef, {
-        name: project,
-        createdAt: new Date(),
-      });
-      newProjectId = res.id;
-      console.log(
-        "project added to firestore successfully!",
-        ` with ID: ${res.id}, name: ${project}`,
-      );
+      newProject = await addProject(user.uid, newProject);
     } catch (error) {
       setError(error);
       console.log(error);
@@ -46,8 +36,10 @@ const ProjectForm = ({ setIsModalOpen }) => {
     setProject("");
 
     // Refresh projects list
-    getProjects();
-    navigate(`/dashboard/projects/${newProjectId}`);
+    getProjects(user.uid);
+    if (newProject.id) {
+      navigate(`/dashboard/projects/${newProject?.id}`);
+    }
   };
 
   return (

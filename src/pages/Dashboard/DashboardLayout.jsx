@@ -4,8 +4,7 @@ import Sidebar from "../../components/Sidebar";
 
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../lib/firebase";
+import { fetchProjects } from "../../services/projectsService";
 
 const DashboardLayout = ({ children }) => {
   const [projects, setProjects] = useState([]);
@@ -15,24 +14,18 @@ const DashboardLayout = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      getProjects();
+      getProjects(user.uid);
     }
   }, [user]);
 
-  const getProjects = async () => {
-    if (!user?.uid) return;
-
+  const getProjects = async (uid) => {
     try {
       setIsFetchingProjects(true);
-      const projectsRef = collection(db, `users/${user?.uid}/projects`);
-      const projectsSnap = await getDocs(projectsRef);
-      const projectsData = projectsSnap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      if (!uid) throw new Error("User id is not defined! Try again!");
+      const projectsData = await fetchProjects(uid);
       setProjects(projectsData);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsFetchingProjects(false);
     }
