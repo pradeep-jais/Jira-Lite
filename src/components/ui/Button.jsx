@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
 
-const Button = ({ to, children, onClick, className, size, variant }) => {
+const Button = ({
+  to,
+  children,
+  onClick,
+  className,
+  size,
+  variant,
+  ...props
+}) => {
   const baseStyles =
     "inline-flex items-center gap-1 capitalize cursor-pointer transition-colors duration-300 ease-in-out tracking-wider shadow-md font-semibold";
 
@@ -20,14 +28,14 @@ const Button = ({ to, children, onClick, className, size, variant }) => {
 
   if (to) {
     return (
-      <Link to={to} className={mergedStyles}>
+      <Link to={to} className={mergedStyles} {...props}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button className={mergedStyles} onClick={onClick}>
+    <button className={mergedStyles} onClick={onClick} {...props}>
       {children}
     </button>
   );

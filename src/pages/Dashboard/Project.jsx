@@ -1,6 +1,6 @@
 import Button from "../../components/ui/Button";
 import { useEffect, useState } from "react";
-import AddTask from "./AddTask";
+import TaskForm from "./TaskForm";
 import {
   Plus,
   Trash2,
@@ -114,7 +114,6 @@ const Project = () => {
     );
 
   const projectDetails = projects.find((project) => project.id === projectId);
-  console.log(projects, projectDetails);
 
   return (
     <section className="max-w-5xl mx-auto p-2">
@@ -150,7 +149,7 @@ const Project = () => {
         </div>
 
         {isModalOpen && (
-          <AddTask
+          <TaskForm
             tasks={tasks}
             action={action}
             postTask={postTask}
@@ -187,17 +186,20 @@ const Project = () => {
                     </Button>
                   </td>
                 </tr>
-                {tasks.map((task, i) => {
+                {tasks.map((task) => {
                   const { id, name, deadline, status } = task;
                   return (
-                    <tr key={id} className="text-textPrimary">
+                    <tr
+                      key={id}
+                      className="text-textPrimary nth-of-type-[even]:bg-background"
+                    >
                       <td className="p-2 flex items-center gap-2">
                         <CircleDashed size={20} /> {name}
                       </td>
                       <td className="p-1">{deadline}</td>
                       <td className="p-1">
                         <span
-                          className={`w-25 flex justify-center items-center ${statusPillColor(status)} capitalize py-0.5 px-2 rounded-2xl`}
+                          className={`flex justify-center items-center w-25 ${statusPillColor(status)} capitalize py-0.5 px-3 pb-1 rounded-xl`}
                         >
                           {status}
                         </span>

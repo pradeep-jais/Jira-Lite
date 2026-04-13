@@ -1,10 +1,10 @@
 import Modal from "../../components/Modal";
-import { ClosedCaption, CrossIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 
 import { useEffect, useState } from "react";
 import Button from "../../components/ui/Button";
 
-const AddTask = ({
+const TaskForm = ({
   tasks,
   action,
   getTasks,
@@ -151,4 +151,4 @@ const AddTask = ({
     </Modal>
   );
 };
-export default AddTask;
+export default TaskForm;
