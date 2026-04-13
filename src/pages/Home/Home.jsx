@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Button from "../../components/ui/Button";
 
 const Home = () => {
   return (
@@ -9,9 +9,9 @@ const Home = () => {
       <p className="text-textSecondary mt-10 text-sm md:text-lg max-w-3xl mx-auto">
         Use this app to manage your projects efficiently.
       </p>
-      <button className="bg-primary text-white text-xl capitalize py-2 px-4 rounded-2xl mt-8 cursor-pointer hover:bg-primaryHover transition-colors duration-300 ease-in-out">
-        <Link to="/login">Get started</Link>
-      </button>
+      <Button to="/login" className={"mt-8"} size={"xl"}>
+        Get started
+      </Button>
     </section>
   );
 };
