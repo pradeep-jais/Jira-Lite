@@ -1,5 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { Menu, PanelLeftClose } from "lucide-react";
+import Button from "./ui/Button";
+
+import { logOut } from "../services/userService";
 
 const Sidebar = ({
   projects,
@@ -40,6 +43,7 @@ const Sidebar = ({
             Projects
           </h3>
           <ul className="gap-1 text-sm text-textPrimary h-[calc(100vh-100px)] overflow-y-auto py-2 pr-2">
+            <Button onClick={logOut}>Logout</Button>
             {projects.map((project) => {
               const { id, name } = project;
               return (
@@ -75,6 +79,7 @@ const Sidebar = ({
               )
             )}
           </ul>
+
           <footer className="bg-surface absolute bottom-0 left-0 right-0 z-1 p-3">
             <p
               className={`text-xs text-textSecondary capitalize text-nowrap ${!isSidebarOpen && "md:opacity-0 md:w-0"}`}

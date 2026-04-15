@@ -1,8 +1,10 @@
 import { useAuthContext } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
+import { logInWithGoogle } from "../../services/userService";
+
 const Login = () => {
-  const { user, signInWithGoogle } = useAuthContext();
+  const { user } = useAuthContext();
 
   if (user) return <Navigate replace to={"/dashboard"} />;
 
@@ -15,7 +17,7 @@ const Login = () => {
         <p className="mt-8">Please Log in</p>
         <button
           className="bg-primary text-white text-sm capitalize py-1 px-4 rounded-2xl mt-1 cursor-pointer hover:bg-primaryHover  transition-colors duration-300 ease-in-out"
-          onClick={signInWithGoogle}
+          onClick={logInWithGoogle}
         >
           Sign up with Google
         </button>

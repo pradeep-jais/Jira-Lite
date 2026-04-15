@@ -1,9 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { createUserIfNotExists } from "../services/userService";
 
@@ -37,29 +33,6 @@ const authReducer = (state, action) => {
     };
   }
   return state;
-};
-
-const googleProvider = new GoogleAuthProvider();
-
-const signInWithGoogle = async () => {
-  try {
-    dispatch({ type: "SET_ERROR", payload: { error: null } });
-    dispatch({ type: "SET_LOADING", payload: true });
-    await signInWithPopup(auth, googleProvider);
-  } catch (error) {
-    dispatch({ type: "SET_ERROR", payload: { error: error.message } });
-  } finally {
-    dispatch({ type: "SET_LOADING", payload: false });
-  }
-};
-
-const logOut = async () => {
-  try {
-    await signOut(auth);
-    console.log("User Logged out successfully!");
-  } catch (error) {
-    console.log(error);
-  }
 };
 
 const AuthProvider = ({ children }) => {
@@ -98,9 +71,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ ...state, dispatch, signInWithGoogle, logOut }}
-    >
+    <AuthContext.Provider value={{ ...state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );
