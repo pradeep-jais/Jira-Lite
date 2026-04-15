@@ -1,12 +1,16 @@
-import { useAuthContext } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 import Button from "../../components/ui/Button";
+import { useEffect } from "react";
 
 const Login = () => {
-  const { signInWithGoogle } = useAuth();
-  const { user, isLoading, error } = useAuthContext();
+  const { user, isLoading, error, signInWithGoogle, clearError } = useAuth();
+
+  useEffect(() => {
+    // Clear any error state after component unmounts
+    return () => clearError();
+  }, []);
 
   if (error) return <Navigate replace to={"/error"} />;
 

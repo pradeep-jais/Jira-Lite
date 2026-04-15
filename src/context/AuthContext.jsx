@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../lib/firebase";
-import { createUserIfNotExists } from "../services/userService";
 
 const AuthContext = createContext();
 
@@ -29,7 +28,13 @@ const authReducer = (state, action) => {
   if (action.type === "SET_USER") {
     return {
       ...state,
-      user: action.payload.user,
+      user: action.payload.userData,
+    };
+  }
+  if (action.type === "CLEAR_ERROR") {
+    return {
+      ...state,
+      error: null,
     };
   }
   return state;
@@ -39,8 +44,6 @@ const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
   useEffect(() => {
-    dispatch({ type: "SET_LOADING", payload: true });
-
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, email, photoURL, metadata } = user;
@@ -57,14 +60,12 @@ const AuthProvider = ({ children }) => {
         dispatch({
           type: "SET_USER",
           payload: {
-            user: userData,
+            userData,
           },
         });
-        createUserIfNotExists(userData); // save new user to firestore
       } else {
-        dispatch({ type: "SET_USER", payload: { user: null } });
+        dispatch({ type: "SET_USER", payload: { userData: null } });
       }
-      dispatch({ type: "SET_LOADING", payload: false });
     });
 
     return () => unsubscribe();

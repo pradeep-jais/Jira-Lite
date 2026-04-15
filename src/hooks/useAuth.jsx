@@ -1,13 +1,24 @@
 import { useAuthContext } from "../context/AuthContext";
-import { logInWithGoogle, logOut } from "../services/userService";
+import {
+  logInWithGoogle,
+  logOut,
+  createUserIfNotExists,
+} from "../services/userService";
 
 const useAuth = () => {
   const { user, isLoading, error, dispatch } = useAuthContext();
 
+  const clearError = () => dispatch({ type: "CLEAR_ERROR" });
+
   const signInWithGoogle = async () => {
+    clearError();
+
+    dispatch({ type: "SET_LOADING", payload: true });
+
     try {
-      dispatch({ type: "SET_LOADING", payload: true });
-      await logInWithGoogle();
+      const userData = await logInWithGoogle();
+      await createUserIfNotExists(userData); // save new user to firestore
+
       console.log("User logged In Successfully!");
     } catch (error) {
       const { code, name, message } = error;
@@ -23,21 +34,13 @@ const useAuth = () => {
   };
 
   const signOut = async () => {
-    try {
-      dispatch({ type: "SET_LOADING", payload: true });
-      await logOut();
-      console.log("User logged out successfully!");
-    } catch (error) {
-      dispatch({
-        type: "SET_ERROR",
-        payload: { error: { code, name, message } },
-      });
-      console.log("Something went wrong!", error);
-    } finally {
-      dispatch({ type: "SET_LOADING", payload: false });
-    }
+    await logOut();
+    console.log("User logged Out Successfully!");
+    // No need to manually dispatch SET_USER; onAuthStateChanged handles it!
+    // Not required to handle loading and error for signOut - It's instant, never fails, bad UX choice
   };
 
-  return { signInWithGoogle, signOut };
+  return { user, isLoading, error, signInWithGoogle, signOut, clearError };
 };
+
 export default useAuth;

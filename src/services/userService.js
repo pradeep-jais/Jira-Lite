@@ -5,7 +5,19 @@ import { auth, db } from "../lib/firebase";
 const logInWithGoogle = async () => {
   const googleProvider = new GoogleAuthProvider();
 
-  await signInWithPopup(auth, googleProvider);
+  const result = await signInWithPopup(auth, googleProvider);
+
+  const { uid, email, photoURL, metadata } = result.user;
+  const userData = {
+    uid,
+    name: result.user.displayName,
+    email,
+    photoURL,
+    createAt: metadata.creationTime,
+    lastLoginAt: metadata.lastSignInTime,
+    role: "user",
+  };
+  return userData;
 };
 
 const logOut = async () => {
