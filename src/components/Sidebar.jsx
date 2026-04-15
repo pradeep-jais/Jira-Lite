@@ -1,8 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { Menu, PanelLeftClose } from "lucide-react";
 import Button from "./ui/Button";
-
-import { logOut } from "../services/userService";
+import useAuth from "../hooks/useAuth";
 
 const Sidebar = ({
   projects,
@@ -10,6 +9,7 @@ const Sidebar = ({
   isSidebarOpen,
   setIsSidebarOpen,
 }) => {
+  const { signOut } = useAuth();
   return (
     <>
       <div
@@ -43,7 +43,7 @@ const Sidebar = ({
             Projects
           </h3>
           <ul className="gap-1 text-sm text-textPrimary h-[calc(100vh-100px)] overflow-y-auto py-2 pr-2">
-            <Button onClick={logOut}>Logout</Button>
+            <Button onClick={signOut}>Logout</Button>
             {projects.map((project) => {
               const { id, name } = project;
               return (

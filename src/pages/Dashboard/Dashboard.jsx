@@ -5,14 +5,14 @@ import Button from "../../components/ui/Button";
 
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user } = useAuthContext();
+  const { user, isLoading } = useAuthContext();
 
   return (
     <section className="flex flex-col gap-12 items-center pt-12">
       <h2 className="text-center text-textPrimary font-medium text-3xl">
         Welcome,{" "}
-        {user ? (
-          <strong>{user.name.split(" ")[0]}</strong>
+        {!isLoading ? (
+          <strong>{user?.name?.split(" ")[0]}</strong>
         ) : (
           <span className="loader-2"></span>
         )}

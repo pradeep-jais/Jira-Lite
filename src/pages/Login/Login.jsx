@@ -1,10 +1,14 @@
 import { useAuthContext } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
-import { logInWithGoogle } from "../../services/userService";
+import useAuth from "../../hooks/useAuth";
+import Button from "../../components/ui/Button";
 
 const Login = () => {
-  const { user } = useAuthContext();
+  const { signInWithGoogle } = useAuth();
+  const { user, isLoading, error } = useAuthContext();
+
+  if (error) return <Navigate replace to={"/error"} />;
 
   if (user) return <Navigate replace to={"/dashboard"} />;
 
@@ -14,13 +18,16 @@ const Login = () => {
         <h2 className="text-2xl text-textPrimary underline underline-offset-8 decoration-primary decoration-3">
           Login Page
         </h2>
-        <p className="mt-8">Please Log in</p>
-        <button
-          className="bg-primary text-white text-sm capitalize py-1 px-4 rounded-2xl mt-1 cursor-pointer hover:bg-primaryHover  transition-colors duration-300 ease-in-out"
-          onClick={logInWithGoogle}
-        >
-          Sign up with Google
-        </button>
+        <p className="mt-10 mb-5">Please Log in</p>
+        <Button size={"lg"} onClick={signInWithGoogle}>
+          {isLoading && (
+            <span
+              className="loader-1"
+              style={{ background: "white", width: "30px", padding: "6px" }}
+            ></span>
+          )}
+          {isLoading ? "Signing In" : "Sign in with Google"}
+        </Button>
       </article>
     </main>
   );

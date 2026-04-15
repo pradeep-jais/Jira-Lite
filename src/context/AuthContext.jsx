@@ -9,7 +9,7 @@ export const useAuthContext = () => useContext(AuthContext);
 
 const initialAuthState = {
   user: null,
-  loading: false,
+  isLoading: false,
   error: null,
 };
 
@@ -17,7 +17,7 @@ const authReducer = (state, action) => {
   if (action.type === "SET_LOADING") {
     return {
       ...state,
-      loading: action.payload,
+      isLoading: action.payload,
     };
   }
   if (action.type === "SET_ERROR") {
