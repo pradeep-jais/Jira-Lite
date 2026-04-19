@@ -14,6 +14,8 @@ const TaskForm = ({ tasks, action, getTasks, setIsModalOpen }) => {
     deadline: "",
     status: "pending",
   });
+  const [taskFormError, setTaskFormError] = useState({});
+
   const { user } = useAuthContext();
   const { id: projectId } = useParams();
 
@@ -37,9 +39,32 @@ const TaskForm = ({ tasks, action, getTasks, setIsModalOpen }) => {
     setTask((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
+    setTaskFormError((prev) => {
+      return { ...prev, [e.target.name]: "" };
+    });
   };
   const handleTaskSubmit = (e) => {
     e.preventDefault();
+    // form validation
+    const newErrors = {};
+
+    if (!task.name.trim()) {
+      newErrors.name = "Please provide a name for the task";
+    }
+    if (!task.deadline) {
+      newErrors.deadline = "Please provide some due date for the task";
+    }
+    const today = new Date().toISOString().split("T")[0];
+    if (task.deadline && task.deadline < today) {
+      newErrors.deadline = "Deadline cannot be in the past";
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setTaskFormError(newErrors);
+      return;
+    }
+
+    setTaskFormError({});
+
     if (action.name === "edit") {
       saveEditedTask(user.uid, projectId, action.taskId, task);
     }
@@ -118,6 +143,9 @@ const TaskForm = ({ tasks, action, getTasks, setIsModalOpen }) => {
             className="bg-surface border border-gray-300 px-3 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="New task"
           />
+          {taskFormError.name && (
+            <p className="text-xs text-warning">{taskFormError.name}</p>
+          )}
         </div>
         <div className="flex flex-col mb-5 gap-1">
           <label
@@ -134,6 +162,9 @@ const TaskForm = ({ tasks, action, getTasks, setIsModalOpen }) => {
             onChange={handleTaskInput}
             className="bg-surface border border-gray-300 px-3 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary uppercase placeholder:text-textSecondary"
           />
+          {taskFormError.deadline && (
+            <p className="text-xs text-warning">{taskFormError.deadline}</p>
+          )}
         </div>
         <div className="flex flex-col mb-5 gap-1">
           <label
