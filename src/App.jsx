@@ -8,6 +8,7 @@ import ErrorPage from "./pages/ErrorPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Project from "./pages/Dashboard/Project";
 import DashboardLayout from "./pages/Dashboard/DashboardLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,9 +17,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="projects/:id" element={<Project />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="projects/:id" element={<Project />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<ErrorPage />} />

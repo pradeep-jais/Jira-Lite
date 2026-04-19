@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import Button from "../../components/ui/Button";
 import { useEffect } from "react";
+import Loader from "../../components/ui/Loader";
 
 const Login = () => {
   const { user, isLoading, error, signInWithGoogle, clearError } = useAuth();
@@ -14,6 +15,7 @@ const Login = () => {
 
   if (error) return <Navigate replace to={"/error"} />;
 
+  if (isLoading) return <Loader />;
   if (user) return <Navigate replace to={"/dashboard"} />;
 
   return (

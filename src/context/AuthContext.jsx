@@ -8,7 +8,7 @@ export const useAuthContext = () => useContext(AuthContext);
 
 const initialAuthState = {
   user: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
 };
 
@@ -66,6 +66,8 @@ const AuthProvider = ({ children }) => {
       } else {
         dispatch({ type: "SET_USER", payload: { userData: null } });
       }
+
+      dispatch({ type: "SET_LOADING", payload: false });
     });
 
     return () => unsubscribe();
