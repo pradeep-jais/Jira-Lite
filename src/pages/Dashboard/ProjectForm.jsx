@@ -9,6 +9,7 @@ import { addProject } from "../../services/projectsService";
 
 const ProjectForm = ({ setIsModalOpen }) => {
   const [project, setProject] = useState("");
+  const [formError, setFormError] = useState(null);
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,7 +19,11 @@ const ProjectForm = ({ setIsModalOpen }) => {
 
   const handleAddProject = async (e) => {
     e.preventDefault();
-    if (!user?.uid || !project.trim()) return;
+    if (!project.trim()) {
+      setFormError("Project name is required!");
+      return;
+    }
+    if (!user?.uid) return;
 
     // Write new projects to Firestore
     let newProject = { name: project, createdAt: new Date() };
@@ -62,15 +67,20 @@ const ProjectForm = ({ setIsModalOpen }) => {
             type="text"
             id="projectName"
             value={project}
-            onChange={(e) => setProject(e.target.value)}
+            onChange={(e) => {
+              setProject(e.target.value);
+              setFormError(null);
+            }}
             className="border border-border px-2 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
             placeholder="Eg; project management app"
           />
+          {formError && <p className="text-warning text-sm">{formError}</p>}
         </div>
         <div className="flex justify-end mt-4">
           <button
-            className="bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md cursor-pointer flex items-center gap-2"
+            className={`bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md  flex items-center gap-2 ${isAddingProject ? "cursor-not-allowed" : "cursor-pointer"}`}
             type="submit"
+            disabled={isAddingProject}
           >
             {isAddingProject && (
               <span
