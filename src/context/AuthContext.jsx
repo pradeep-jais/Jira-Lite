@@ -8,15 +8,22 @@ export const useAuthContext = () => useContext(AuthContext);
 
 const initialAuthState = {
   user: null,
-  isLoading: true,
+  isInitialLoading: true,
+  isActionLoading: false,
   error: null,
 };
 
 const authReducer = (state, action) => {
-  if (action.type === "SET_LOADING") {
+  if (action.type === "SET_INITIAL_LOADING") {
     return {
       ...state,
-      isLoading: action.payload,
+      isInitialLoading: action.payload,
+    };
+  }
+  if (action.type === "SET_ACTION_LOADING") {
+    return {
+      ...state,
+      isActionLoading: action.payload,
     };
   }
   if (action.type === "SET_ERROR") {
@@ -67,7 +74,7 @@ const AuthProvider = ({ children }) => {
         dispatch({ type: "SET_USER", payload: { userData: null } });
       }
 
-      dispatch({ type: "SET_LOADING", payload: false });
+      dispatch({ type: "SET_INITIAL_LOADING", payload: false });
     });
 
     return () => unsubscribe();

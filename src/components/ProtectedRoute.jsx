@@ -3,9 +3,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import Loader from "./ui/Loader";
 
 const ProtectedRoute = () => {
-  const { user, isLoading } = useAuthContext();
+  const { user, isInitialLoading } = useAuthContext();
 
-  if (isLoading) return <Loader />;
+  if (isInitialLoading) return <Loader />;
 
   if (!user) return <Navigate to={"/"} />;
 

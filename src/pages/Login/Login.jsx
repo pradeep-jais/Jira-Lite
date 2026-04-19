@@ -6,7 +6,14 @@ import { useEffect } from "react";
 import Loader from "../../components/ui/Loader";
 
 const Login = () => {
-  const { user, isLoading, error, signInWithGoogle, clearError } = useAuth();
+  const {
+    user,
+    isInitialLoading,
+    isActionLoading,
+    error,
+    signInWithGoogle,
+    clearError,
+  } = useAuth();
 
   useEffect(() => {
     // Clear any error state after component unmounts
@@ -15,7 +22,7 @@ const Login = () => {
 
   if (error) return <Navigate replace to={"/error"} />;
 
-  if (isLoading) return <Loader />;
+  if (isInitialLoading) return <Loader />;
   if (user) return <Navigate replace to={"/dashboard"} />;
 
   return (
@@ -26,13 +33,13 @@ const Login = () => {
         </h2>
         <p className="mt-10 mb-5">Please Log in</p>
         <Button size={"lg"} onClick={signInWithGoogle}>
-          {isLoading && (
+          {isActionLoading && (
             <span
               className="loader-1"
               style={{ background: "white", width: "30px", padding: "6px" }}
             ></span>
           )}
-          {isLoading ? "Signing In" : "Sign in with Google"}
+          {isActionLoading ? "Signing In" : "Sign in with Google"}
         </Button>
       </article>
     </main>
