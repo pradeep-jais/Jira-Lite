@@ -1,6 +1,17 @@
 import { Menu } from "lucide-react";
 
-const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+import { useAuthContext } from "../context/AuthContext";
+import PopupBox from "./PopupBox";
+import ProfileMenu from "./ProfileMenu";
+
+const Navbar = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
+  isPopupOpen,
+  setIsPopupOpen,
+}) => {
+  const { user } = useAuthContext();
+
   return (
     <nav className=" h-16 flex justify-between items-center px-4 border-b border-border">
       <div className="flex items-center gap-4">
@@ -16,9 +27,26 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           Jira <strong className="text-primary">Lite</strong>
         </span>
       </div>
-      <span className="bg-primary text-sm rounded-full w-10 h-10 flex items-center justify-center text-white">
-        User
-      </span>
+      <div className="relative">
+        <button
+          className="bg-surface border border-border text-sm rounded-full w-11 h-11  flex items-center justify-center text-white overflow-hidden  cursor-pointer"
+          onClick={() => setIsPopupOpen(true)}
+        >
+          {user.photoURL ? (
+            <img src={user.photoURL} alt={user.name} className="square" />
+          ) : (
+            <img src="/images/user.png" alt="user profile" className="w-8" />
+          )}
+        </button>
+        {isPopupOpen && (
+          <PopupBox
+            closePopup={() => setIsPopupOpen(false)}
+            position={"top-full right-10"}
+          >
+            <ProfileMenu />
+          </PopupBox>
+        )}
+      </div>
     </nav>
   );
 };

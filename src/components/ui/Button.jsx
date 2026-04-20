@@ -10,11 +10,12 @@ const Button = ({
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center gap-1 capitalize cursor-pointer transition-colors duration-300 ease-in-out tracking-wider shadow-md font-semibold";
+    "inline-flex items-center justify-center gap-1 capitalize cursor-pointer transition-colors duration-300 ease-in-out tracking-wider shadow-md font-semibold";
 
   const themeStyles = {
     primary: "bg-primary text-white hover:bg-primaryHover",
     hipster: "bg-gray-100 text-primary font-bold hover:bg-gray-200",
+    warning: " bg-warning text-white hover:bg-orange-600",
   };
 
   const sizeStyles = {

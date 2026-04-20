@@ -5,11 +5,13 @@ import Sidebar from "../../components/Sidebar";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { fetchProjects } from "../../services/projectsService";
+import PopupBox from "../../components/PopupBox";
 
 const DashboardLayout = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -43,6 +45,8 @@ const DashboardLayout = ({ children }) => {
         <Navbar
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
+          isPopupOpen={isPopupOpen}
+          setIsPopupOpen={setIsPopupOpen}
         />
         <main>
           <Outlet context={{ projects, isFetchingProjects, getProjects }} />
