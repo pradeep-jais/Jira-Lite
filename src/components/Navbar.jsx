@@ -33,7 +33,16 @@ const Navbar = ({
           onClick={() => setIsPopupOpen(true)}
         >
           {user.photoURL ? (
-            <img src={user.photoURL} alt={user.name} className="square" />
+            <img
+              src={user.photoURL}
+              alt={user.name}
+              className="square"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/images/user.png";
+                e.target.className = "w-8";
+              }}
+            />
           ) : (
             <img src="/images/user.png" alt="user profile" className="w-8" />
           )}
