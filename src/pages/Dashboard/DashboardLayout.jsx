@@ -40,6 +40,8 @@ const DashboardLayout = ({ children }) => {
         isFetchingProjects={isFetchingProjects}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
+        isPopupOpen={isPopupOpen}
+        setIsPopupOpen={setIsPopupOpen}
       />
       <div className="flex-auto min-w-0">
         <Navbar
