@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 import {
   Menu,
   PanelLeftClose,
@@ -16,9 +17,9 @@ const Sidebar = ({
   isFetchingProjects,
   isSidebarOpen,
   setIsSidebarOpen,
-  isPopupOpen,
-  setIsPopupOpen,
 }) => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   const { signOut } = useAuth();
   return (
     <>
@@ -103,7 +104,7 @@ const Sidebar = ({
                 {isPopupOpen && (
                   <PopupBox
                     closePopup={() => setIsPopupOpen(false)}
-                    position={"top-full right-10"}
+                    position={"top-full left-20"}
                   >
                     <ProfileMenu />
                   </PopupBox>

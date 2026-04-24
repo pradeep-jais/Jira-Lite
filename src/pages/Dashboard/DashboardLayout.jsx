@@ -11,7 +11,6 @@ const DashboardLayout = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -40,15 +39,11 @@ const DashboardLayout = ({ children }) => {
         isFetchingProjects={isFetchingProjects}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
-        isPopupOpen={isPopupOpen}
-        setIsPopupOpen={setIsPopupOpen}
       />
       <div className="flex-auto min-w-0">
         <Navbar
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
-          isPopupOpen={isPopupOpen}
-          setIsPopupOpen={setIsPopupOpen}
         />
         <main>
           <Outlet context={{ projects, isFetchingProjects, getProjects }} />

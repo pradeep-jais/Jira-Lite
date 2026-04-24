@@ -1,15 +1,12 @@
 import { Menu } from "lucide-react";
+import { useState } from "react";
 
 import { useAuthContext } from "../context/AuthContext";
 import PopupBox from "./PopupBox";
 import ProfileMenu from "./ProfileMenu";
 
-const Navbar = ({
-  isSidebarOpen,
-  setIsSidebarOpen,
-  isPopupOpen,
-  setIsPopupOpen,
-}) => {
+const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { user } = useAuthContext();
 
   return (
