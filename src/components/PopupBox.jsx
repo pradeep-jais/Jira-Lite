@@ -1,6 +1,4 @@
-import ProfileMenu from "./ProfileMenu";
-
-const PopupBox = ({ closePopup, position, children }) => {
+const PopupBox = ({ closePopup, coords, children }) => {
   return (
     <>
       <div
@@ -8,7 +6,11 @@ const PopupBox = ({ closePopup, position, children }) => {
         onClick={closePopup}
       ></div>
       <div
-        className={`w-60 min-h-60 h-full bg-surface rounded-md shadow-xl absolute z-70 ${position}`}
+        className={`w-60 h-60 min-h-60 bg-surface rounded-md shadow-xl fixed z-70`}
+        style={{
+          top: coords.top,
+          left: coords.left,
+        }}
       >
         {children}
       </div>

@@ -1,12 +1,8 @@
 import { Menu } from "lucide-react";
-import { useState } from "react";
 
 import { useAuthContext } from "../context/AuthContext";
-import PopupBox from "./PopupBox";
-import ProfileMenu from "./ProfileMenu";
 
-const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+const Navbar = ({ isSidebarOpen, setIsSidebarOpen, togglePopup }) => {
   const { user } = useAuthContext();
 
   return (
@@ -24,35 +20,26 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           Jira <strong className="text-primary">Lite</strong>
         </span>
       </div>
-      <div className="relative">
-        <button
-          className="bg-surface border border-border text-sm rounded-full w-11 h-11  flex items-center justify-center text-white overflow-hidden  cursor-pointer"
-          onClick={() => setIsPopupOpen(true)}
-        >
-          {user.photoURL ? (
-            <img
-              src={user.photoURL}
-              alt={user.name}
-              className="square"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "/images/user.png";
-                e.target.className = "w-8";
-              }}
-            />
-          ) : (
-            <img src="/images/user.png" alt="user profile" className="w-8" />
-          )}
-        </button>
-        {isPopupOpen && (
-          <PopupBox
-            closePopup={() => setIsPopupOpen(false)}
-            position={"top-full right-10"}
-          >
-            <ProfileMenu />
-          </PopupBox>
+      <button
+        className="bg-surface border border-border text-sm rounded-full w-11 h-11  flex items-center justify-center text-white overflow-hidden  cursor-pointer"
+        onClick={(e) => togglePopup(e)}
+        data-name="nav-profile-btn"
+      >
+        {user.photoURL ? (
+          <img
+            src={user.photoURL}
+            alt={user.name}
+            className="square"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/images/user.png";
+              e.target.className = "w-8";
+            }}
+          />
+        ) : (
+          <img src="/images/user.png" alt="user profile" className="w-8" />
         )}
-      </div>
+      </button>
     </nav>
   );
 };

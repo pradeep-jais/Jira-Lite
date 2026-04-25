@@ -6,11 +6,15 @@ import { useState, useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { fetchProjects } from "../../services/projectsService";
 import PopupBox from "../../components/PopupBox";
+import userPopover from "../../hooks/usePopover";
+import ProfileMenu from "../../components/ProfileMenu";
 
 const DashboardLayout = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const { isPopupOpen, coords, togglePopup } = userPopover(false);
+
   const { user } = useAuthContext();
 
   useEffect(() => {
@@ -34,16 +38,23 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className=" flex  gap-2">
+      {isPopupOpen && (
+        <PopupBox closePopup={togglePopup} coords={coords}>
+          <ProfileMenu />
+        </PopupBox>
+      )}
       <Sidebar
         projects={projects}
         isFetchingProjects={isFetchingProjects}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
+        togglePopup={togglePopup}
       />
       <div className="flex-auto min-w-0">
         <Navbar
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
+          togglePopup={togglePopup}
         />
         <main>
           <Outlet context={{ projects, isFetchingProjects, getProjects }} />

@@ -11,15 +11,15 @@ import Button from "./ui/Button";
 import useAuth from "../hooks/useAuth";
 import PopupBox from "./PopupBox";
 import ProfileMenu from "./ProfileMenu";
+import userPopover from "../hooks/usePopover";
 
 const Sidebar = ({
   projects,
   isFetchingProjects,
   isSidebarOpen,
   setIsSidebarOpen,
+  togglePopup,
 }) => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
   const { signOut } = useAuth();
   return (
     <>
@@ -54,7 +54,7 @@ const Sidebar = ({
             >
               Menu
             </h3>
-            <ul className="flex flex-col gap-3 text-sm text-textPrimary py-2 pr-2">
+            <ul className="flex flex-col gap-4 text-sm text-textPrimary py-2">
               <li>
                 <NavLink
                   to={`/`}
@@ -87,9 +87,9 @@ const Sidebar = ({
                   </span>
                 </NavLink>
               </li>
-              <li className="relative">
+              <li>
                 <button
-                  onClick={() => setIsPopupOpen(true)}
+                  onClick={(e) => togglePopup(e)}
                   className={
                     "flex items-center gap-2 w-fit text-md hover:text-primaryHover capitalize font-bold tracking-wide border-none cursor-pointer rounded-sm transition duration-100 text-nowrap overflow-hidden text-ellipsis"
                   }
@@ -101,18 +101,10 @@ const Sidebar = ({
                     Profile
                   </span>
                 </button>
-                {isPopupOpen && (
-                  <PopupBox
-                    closePopup={() => setIsPopupOpen(false)}
-                    position={"top-full left-20"}
-                  >
-                    <ProfileMenu />
-                  </PopupBox>
-                )}
               </li>
             </ul>
           </div>
-          <div>
+          <div className={`${!isSidebarOpen && "md:hidden"}`}>
             <h3
               className={`capitalize  text-textSecondary border-b pb-1 mr-6 border-border font-medium tracking-wide ${!isSidebarOpen && "md:opacity-0 md:w-0"}`}
             >
