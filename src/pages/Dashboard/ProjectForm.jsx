@@ -1,49 +1,49 @@
 import { useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import Modal from "../../components/Modal";
 
 import { useAuthContext } from "../../context/AuthContext";
-import { useNavigate, useOutletContext } from "react-router-dom";
-
-import { addProject } from "../../services/projectsService";
+import useProjects from "../../hooks/useProjects";
 
 const ProjectForm = ({ setIsModalOpen }) => {
   const [project, setProject] = useState("");
   const [formError, setFormError] = useState(null);
-  const [isAddingProject, setIsAddingProject] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState(null);
+
+  const { createProject } = useOutletContext();
 
   const { user } = useAuthContext();
   const navigate = useNavigate();
-  const { getProjects } = useOutletContext();
 
   const handleAddProject = async (e) => {
     e.preventDefault();
+
     if (!project.trim()) {
       setFormError("Project name is required!");
       return;
     }
-    if (!user?.uid) return;
 
     // Write new projects to Firestore
     let newProject = { name: project, createdAt: new Date() };
+
     try {
-      setIsAddingProject(true);
-      newProject = await addProject(user.uid, newProject);
+      setIsCreating(true);
+
+      const res = await createProject(user.uid, newProject);
+
+      setIsModalOpen(false);
+      setProject("");
+
+      if (res?.id) {
+        navigate(`/dashboard/projects/${res.id}`);
+      }
     } catch (error) {
       setError(error);
-      console.log(error);
+      console.error("Error while creating project:", error);
     } finally {
-      setIsAddingProject(false);
-    }
-
-    setIsModalOpen(false);
-    setProject("");
-
-    // Refresh projects list
-    getProjects(user.uid);
-    if (newProject.id) {
-      navigate(`/dashboard/projects/${newProject?.id}`);
+      setIsCreating(false);
     }
   };
 
@@ -70,19 +70,25 @@ const ProjectForm = ({ setIsModalOpen }) => {
             onChange={(e) => {
               setProject(e.target.value);
               setFormError(null);
+              setError(null);
             }}
             className="border border-border px-2 py-1 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary"
             placeholder="Eg; project management app"
           />
           {formError && <p className="text-warning text-sm">{formError}</p>}
+          {error && (
+            <p className="text-warning text-sm">
+              Ops! Error while creating new project, Please try again.
+            </p>
+          )}
         </div>
         <div className="flex justify-end mt-4">
           <button
-            className={`bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md  flex items-center gap-2 ${isAddingProject ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`bg-primary hover:bg-primaryHover transform duration-300 text-white text-sm py-1 px-4 capitalize rounded-md  flex items-center gap-2 ${isCreating ? "cursor-not-allowed" : "cursor-pointer"}`}
             type="submit"
-            disabled={isAddingProject}
+            disabled={isCreating}
           >
-            {isAddingProject && (
+            {isCreating && (
               <span
                 className="loader-1"
                 style={{
@@ -92,7 +98,7 @@ const ProjectForm = ({ setIsModalOpen }) => {
                 }}
               ></span>
             )}
-            {!isAddingProject ? "Create project" : `${"Creating project"}`}
+            {!isCreating ? "Create project" : `${"Creating project"}`}
           </button>
         </div>
       </form>

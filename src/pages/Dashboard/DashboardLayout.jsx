@@ -1,17 +1,18 @@
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
+
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
-
-import { useState, useEffect } from "react";
-import { useAuthContext } from "../../context/AuthContext";
-import { fetchProjects } from "../../services/projectsService";
 import PopupBox from "../../components/PopupBox";
-import userPopover from "../../hooks/usePopover";
 import ProfileMenu from "../../components/ProfileMenu";
 
+import { useAuthContext } from "../../context/AuthContext";
+import userPopover from "../../hooks/usePopover";
+import useProjects from "../../hooks/useProjects";
+
 const DashboardLayout = ({ children }) => {
-  const [projects, setProjects] = useState([]);
-  const [isFetchingProjects, setIsFetchingProjects] = useState(true);
+  const { projects, getProjects, createProject, isLoading, error } =
+    useProjects();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { isPopupOpen, coords, togglePopup } = userPopover(false);
 
@@ -23,19 +24,6 @@ const DashboardLayout = ({ children }) => {
     }
   }, [user]);
 
-  const getProjects = async (uid) => {
-    try {
-      setIsFetchingProjects(true);
-      if (!uid) throw new Error("User id is not defined! Try again!");
-      const projectsData = await fetchProjects(uid);
-      setProjects(projectsData);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsFetchingProjects(false);
-    }
-  };
-
   return (
     <div className=" flex  gap-2">
       {isPopupOpen && (
@@ -45,7 +33,7 @@ const DashboardLayout = ({ children }) => {
       )}
       <Sidebar
         projects={projects}
-        isFetchingProjects={isFetchingProjects}
+        isFetchingProjects={isLoading}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
         togglePopup={togglePopup}
@@ -57,7 +45,9 @@ const DashboardLayout = ({ children }) => {
           togglePopup={togglePopup}
         />
         <main>
-          <Outlet context={{ projects, isFetchingProjects, getProjects }} />
+          <Outlet
+            context={{ projects, isLoading, getProjects, createProject }}
+          />
         </main>
       </div>
     </div>

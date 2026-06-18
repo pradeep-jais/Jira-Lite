@@ -13,6 +13,7 @@ import { deleteTask, fetchTasks } from "../../services/taskService";
 
 import { useParams, useOutletContext } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
+import useProjects from "../../hooks/useProjects";
 
 const Project = () => {
   const [tasks, setTasks] = useState([]);
@@ -21,7 +22,7 @@ const Project = () => {
 
   const { user } = useAuthContext();
   const { id: projectId } = useParams();
-  const { projects, isFetchingProjects } = useOutletContext();
+  const { projects, isLoading } = useOutletContext();
 
   useEffect(() => {
     if (user && projectId) getTasks(user.uid, projectId);
@@ -59,7 +60,7 @@ const Project = () => {
     return colorClass;
   };
 
-  if (isFetchingProjects)
+  if (isLoading)
     return (
       <div className="h-[calc(100vh-100px)] flex justify-center items-center">
         <div className="loader-2"></div>
