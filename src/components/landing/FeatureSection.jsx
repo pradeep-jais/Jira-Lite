@@ -32,9 +32,12 @@ const FeatureSection = () => {
 
               <p className="mt-4 leading-7 text-textSecondary">{description}</p>
               <div className="flex flex-wrap gap-2 mt-4.5">
-                {tags.map((tag) => {
+                {tags.map((tag, i) => {
                   return (
-                    <span className="text-xs bg-surface border border-border text-textPrimary font-display font-semibold px-3 py-1 rounded-full">
+                    <span
+                      key={i}
+                      className="text-xs bg-surface border border-border text-textPrimary font-display font-semibold px-3 py-1 rounded-full"
+                    >
                       {tag}
                     </span>
                   );

@@ -1,32 +1,47 @@
+import { FaReact, FaDatabase } from "react-icons/fa";
+import { RiFirebaseFill, RiTailwindCssFill } from "react-icons/ri";
+import { SiReactrouter } from "react-icons/si";
+import { Sparkles, Landmark, Lock, Handshake, FolderCheck } from "lucide-react";
+
 const stacks = [
-  { name: "React", icon: "⚛️", color: "#61dafb", desc: "UI Library" },
-  { name: "Firebase", icon: "🔥", color: "#ffca28", desc: "Backend" },
+  { name: "React", icon: FaReact, color: "#61dafb", desc: "UI Library" },
+  {
+    name: "Firebase",
+    icon: RiFirebaseFill,
+    color: "#ffca28",
+    desc: "Backend",
+  },
   {
     name: "Tailwind CSS",
-    icon: "🎨",
+    icon: RiTailwindCssFill,
     color: "#38bdf8",
     desc: "Styling",
   },
   {
     name: "React Router",
-    icon: "🔀",
+    icon: SiReactrouter,
     color: "#f44250",
     desc: "Routing",
   },
   {
     name: "Firestore",
-    icon: "🗄️",
-    color: "#ff6d00",
+    icon: FaDatabase,
+    color: "#BB7400",
     desc: "Database",
   },
-  { name: "Lucide", icon: "✦", color: "#a78bfa", desc: "Icons" },
+  {
+    name: "React icons - Lucide",
+    icon: Sparkles,
+    color: "#a78bfa",
+    desc: "Icons",
+  },
 ];
 
 const architectures = [
-  { label: "Service-Oriented Architecture", icon: "🏛️" },
-  { label: "Protected Route Guards", icon: "🛡️" },
-  { label: "Reusable Custom Hooks", icon: "🪝" },
-  { label: "Scalable Folder Structure", icon: "📁" },
+  { label: "Service-Oriented Architecture", icon: Landmark, color: "#00359E" },
+  { label: "Protected Route Guards", icon: Lock, color: "#BB00BB" },
+  { label: "Reusable Custom Hooks", icon: Handshake, color: "#3f7cac" },
+  { label: "Scalable Folder Structure", icon: FolderCheck, color: "7a9f00" },
 ];
 
 const TechStack = () => {
@@ -55,7 +70,9 @@ const TechStack = () => {
               key={t.name}
               className="bg-surface border border-border rounded-2xl p-5 flex flex-col items-center text-center gap-3 hover:border-primary hover:scale-108 transition-transform duration-300"
             >
-              <span className="text-3xl">{t.icon}</span>
+              <span className="text-3xl">
+                <t.icon style={{ color: t.color }} />
+              </span>
               <div>
                 <div className="text-sm text-textPrimary font-semibold">
                   {t.name}
@@ -73,7 +90,9 @@ const TechStack = () => {
               key={a.label}
               className="flex items-center gap-3 px-5 py-4 rounded-xl bg-surface border border-border"
             >
-              <span className="text-xl">{a.icon}</span>
+              <span className="text-xl">
+                <a.icon style={{ color: a.color }} />
+              </span>
               <span className="text-textPrimary font-semibold text-sm">
                 {a.label}
               </span>
